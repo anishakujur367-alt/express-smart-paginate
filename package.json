@@ -1,0 +1,45 @@
+
+{
+  "name": "express-smart-paginate",
+  "version": "1.0.0",
+  "description": "Express middleware for offset and cursor pagination, safe sorting, filter validation and consistent API responses.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "express",
+    "pagination",
+    "cursor-pagination",
+    "offset-pagination",
+    "middleware",
+    "sorting",
+    "filtering",
+    "typescript"
+  ],
+  "author": "Anisha Kujur",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "peerDependencies": {
+    "express": "^4.18.0 || ^5.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "express": "^5.3.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.12"
+  }
+}
