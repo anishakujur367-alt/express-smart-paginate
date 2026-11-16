@@ -1,11 +1,18 @@
+
 export function calculateOffset(
   page: number,
   limit: number
 ): number {
+  if (!Number.isInteger(page) || page < 1) {
+    throw new Error("Page must be a positive integer.");
+  }
+
+  if (!Number.isInteger(limit) || limit < 1) {
+    throw new Error("Limit must be a positive integer.");
+  }
+
   return (page - 1) * limit;
 }
-
-
 
 export function paginateOffset<T>(
   data: T[],
@@ -13,9 +20,19 @@ export function paginateOffset<T>(
   limit: number,
   total: number
 ) {
+  if (!Array.isArray(data)) {
+    throw new Error("Data must be an array.");
+  }
+
+  if (!Number.isInteger(total) || total < 0) {
+    throw new Error("Total must be a non-negative integer.");
+  }
+
   const offset = calculateOffset(page, limit);
 
   const paginatedData = data.slice(offset, offset + limit);
+
+  const totalPages = Math.ceil(total / limit);
 
   return {
     data: paginatedData,
@@ -24,9 +41,9 @@ export function paginateOffset<T>(
       page,
       limit,
       total,
-      totalPages: Math.ceil(total / limit),
-      hasNextPage: page < Math.ceil(total / limit),
-      hasPreviousPage: page > 1
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPreviousPage: page > 1 && page <= totalPages
     }
   };
 }

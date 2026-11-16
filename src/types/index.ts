@@ -7,10 +7,19 @@ export type FilterValueType = "string" | "number" | "boolean";
 
 export type FilterValue = string | number | boolean;
 
-export interface FilterDefinition {
-  type: FilterValueType;
-  allowedValues?: readonly FilterValue[];
-}
+export type FilterDefinition =
+  | {
+      type: "string";
+      allowedValues?: readonly string[];
+    }
+  | {
+      type: "number";
+      allowedValues?: readonly number[];
+    }
+  | {
+      type: "boolean";
+      allowedValues?: readonly boolean[];
+    };
 
 export interface SmartPaginateOptions {
   mode?: PaginationMode;

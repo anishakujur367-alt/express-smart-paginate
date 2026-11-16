@@ -15,6 +15,10 @@ describe("Pagination Validation", () => {
       expect(validatePage(5)).toBe(5);
     });
 
+    it("should accept a numeric string", () => {
+      expect(validatePage("5")).toBe(5);
+    });
+
     it("should reject zero", () => {
       expect(() => validatePage(0)).toThrow();
     });
@@ -25,6 +29,22 @@ describe("Pagination Validation", () => {
 
     it("should reject decimal numbers", () => {
       expect(() => validatePage(2.5)).toThrow();
+    });
+
+    it("should reject an empty string", () => {
+      expect(() => validatePage("")).toThrow();
+    });
+
+    it("should reject whitespace-only strings", () => {
+      expect(() => validatePage("   ")).toThrow();
+    });
+
+    it("should reject null", () => {
+      expect(() => validatePage(null)).toThrow();
+    });
+
+    it("should reject unsafe integers", () => {
+      expect(() => validatePage(Number.MAX_SAFE_INTEGER + 1)).toThrow();
     });
   });
 
@@ -37,12 +57,50 @@ describe("Pagination Validation", () => {
       expect(validateLimit(20)).toBe(20);
     });
 
+    it("should accept a numeric string", () => {
+      expect(validateLimit("20")).toBe(20);
+    });
+
     it("should reject a limit above maximum", () => {
       expect(() => validateLimit(101)).toThrow();
     });
 
     it("should reject zero", () => {
       expect(() => validateLimit(0)).toThrow();
+    });
+
+    it("should reject negative limits", () => {
+      expect(() => validateLimit(-5)).toThrow();
+    });
+
+    it("should reject decimal limits", () => {
+      expect(() => validateLimit(2.5)).toThrow();
+    });
+
+    it("should reject an empty string", () => {
+      expect(() => validateLimit("")).toThrow();
+    });
+
+    it("should reject null", () => {
+      expect(() => validateLimit(null)).toThrow();
+    });
+
+    it("should reject an invalid default limit", () => {
+      expect(() => validateLimit(undefined, 0, 100)).toThrow();
+    });
+
+    it("should reject an invalid maximum limit", () => {
+      expect(() => validateLimit(undefined, 10, 0)).toThrow();
+    });
+
+    it("should reject a default limit greater than maximum", () => {
+      expect(() => validateLimit(undefined, 20, 10)).toThrow();
+    });
+
+    it("should reject an unsafe limit", () => {
+      expect(() =>
+        validateLimit(Number.MAX_SAFE_INTEGER + 1)
+      ).toThrow();
     });
   });
 
@@ -53,6 +111,10 @@ describe("Pagination Validation", () => {
 
     it("should accept cursor mode", () => {
       expect(validatePaginationMode("cursor")).toBe("cursor");
+    });
+
+    it("should accept offset mode", () => {
+      expect(validatePaginationMode("offset")).toBe("offset");
     });
 
     it("should reject invalid modes", () => {
@@ -71,6 +133,10 @@ describe("Pagination Validation", () => {
 
     it("should reject an empty cursor", () => {
       expect(() => validateCursor("")).toThrow();
+    });
+
+    it("should reject whitespace-only cursors", () => {
+      expect(() => validateCursor("   ")).toThrow();
     });
 
     it("should reject a non-string cursor", () => {

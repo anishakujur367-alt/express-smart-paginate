@@ -16,6 +16,18 @@ describe("Cursor Pagination", () => {
     it("should encode a number value", () => {
       expect(decodeCursor(encodeCursor(25))).toBe("25");
     });
+
+    it("should reject an empty string", () => {
+      expect(() => encodeCursor("")).toThrow(
+        "Cursor value must be a valid string or number."
+      );
+    });
+
+    it("should reject an invalid number", () => {
+      expect(() => encodeCursor(Infinity)).toThrow(
+        "Cursor value must be a valid string or number."
+      );
+    });
   });
 
   describe("decodeCursor", () => {
@@ -23,6 +35,16 @@ describe("Cursor Pagination", () => {
       const cursor = encodeCursor("15");
 
       expect(decodeCursor(cursor)).toBe("15");
+    });
+
+    it("should reject an empty cursor", () => {
+      expect(() => decodeCursor("")).toThrow("Invalid cursor.");
+    });
+
+    it("should reject a malformed cursor", () => {
+      expect(() => decodeCursor("invalid@@@")).toThrow(
+        "Invalid cursor."
+      );
     });
   });
 
@@ -111,6 +133,58 @@ describe("Cursor Pagination", () => {
       expect(() =>
         paginateCursor(products, 10, invalidCursor)
       ).toThrow("Cursor not found.");
+    });
+
+    it("should reject a zero limit", () => {
+      expect(() => paginateCursor(products, 0)).toThrow(
+        "Limit must be a positive integer."
+      );
+    });
+
+    it("should reject a negative limit", () => {
+      expect(() => paginateCursor(products, -5)).toThrow(
+        "Limit must be a positive integer."
+      );
+    });
+
+    it("should reject a decimal limit", () => {
+      expect(() => paginateCursor(products, 1.5)).toThrow(
+        "Limit must be a positive integer."
+      );
+    });
+
+    it("should reject an invalid direction", () => {
+      expect(() =>
+        paginateCursor(products, 10, undefined, "id", "invalid" as any)
+      ).toThrow("Direction must be next or previous.");
+    });
+
+    it("should reject an empty cursor", () => {
+      expect(() =>
+        paginateCursor(products, 10, "")
+      ).toThrow("Invalid cursor.");
+    });
+
+    it("should reject duplicate cursor field values", () => {
+      const duplicateProducts = [
+        { id: 1, name: "Product A" },
+        { id: 1, name: "Product B" }
+      ];
+
+      expect(() =>
+        paginateCursor(duplicateProducts, 10)
+      ).toThrow("Cursor field values must be unique.");
+    });
+
+    it("should reject records with missing cursor fields", () => {
+      const invalidProducts = [
+        { id: 1, name: "Product A" },
+        { name: "Product B" }
+      ];
+
+      expect(() =>
+        paginateCursor(invalidProducts, 10)
+      ).toThrow("Every record must have a valid cursor field.");
     });
   });
 });

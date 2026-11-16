@@ -20,6 +20,36 @@ describe("Offset Pagination", () => {
     it("should return 20 for page 3", () => {
       expect(calculateOffset(3, 10)).toBe(20);
     });
+
+    it("should throw an error for page 0", () => {
+      expect(() => calculateOffset(0, 10)).toThrow(
+        "Page must be a positive integer."
+      );
+    });
+
+    it("should throw an error for a negative page", () => {
+      expect(() => calculateOffset(-1, 10)).toThrow(
+        "Page must be a positive integer."
+      );
+    });
+
+    it("should throw an error for decimal page", () => {
+      expect(() => calculateOffset(1.5, 10)).toThrow(
+        "Page must be a positive integer."
+      );
+    });
+
+    it("should throw an error for limit 0", () => {
+      expect(() => calculateOffset(1, 0)).toThrow(
+        "Limit must be a positive integer."
+      );
+    });
+
+    it("should throw an error for negative limit", () => {
+      expect(() => calculateOffset(1, -10)).toThrow(
+        "Limit must be a positive integer."
+      );
+    });
   });
 
   describe("paginateOffset", () => {
@@ -70,6 +100,24 @@ describe("Offset Pagination", () => {
       const result = paginateOffset(products, 3, 10, 25);
 
       expect(result.pagination.hasNextPage).toBe(false);
+    });
+
+    it("should reject negative total", () => {
+      expect(() => paginateOffset(products, 1, 10, -1)).toThrow(
+        "Total must be a non-negative integer."
+      );
+    });
+
+    it("should reject decimal total", () => {
+      expect(() => paginateOffset(products, 1, 10, 2.5)).toThrow(
+        "Total must be a non-negative integer."
+      );
+    });
+
+    it("should reject non-array data", () => {
+      expect(() => paginateOffset(null as any, 1, 10, 25)).toThrow(
+        "Data must be an array."
+      );
     });
   });
 });
